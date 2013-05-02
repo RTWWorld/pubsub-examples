@@ -12,12 +12,18 @@ This sample app uses the Realtime® Framework Pub/Sub Appcelerator Titanium modu
 > 
 > **Don't forget to replace `YOUR_APPLICATION_KEY` and `YOUR_APPLICATION_PRIVATE_KEY` with your own application key. If you don't already own a free Realtime® Framework application key, [get one now](https://app.realtime.co/developers/getlicense).**
 
-## Module download
-If you prefer you can download the Realtime® Framework Pub/Sub Appcelerator Titanium modules in ZIP format from the following links:
+## Appcelerator Marketplace module download
+You should download the Realtime® Framework Pub/Sub Appcelerator Titanium modules from the Appcelerator Marketplace using the following link:
 
-[**iPhone module download**](http://ortc.xrtml.org/api/download/titanium-iphone/2.1.0/co.realtime.ortc-iphone-1.0.zip)
+[**Easy pub/sub messaging for Realtime® Framework**](https://marketplace.appcelerator.com/apps/5539?69017729)
 
-[**Android module download**](http://ortc.xrtml.org/api/download/titanium-android/2.1.0/co.realtime.ortc-android-1.0.zip)
+>Appcelerator, Appcelerator Titanium and associated marks and logos are 
+trademarks of Appcelerator, Inc.
+ 
+>Titanium is Copyright (c) 2009-2010 by Appcelerator, Inc. All Rights Reserved.
+>
+>Titanium is licensed under the Apache Public License (Version 2). Please
+see the LICENSE file for the full license.
 
 ## Documentation
 The complete Realtime® Framework Pub/Sub reference documentation is available [here](http://docs.xrtml.org/pubsub/library/2-1-0/welcome.htm)
