@@ -3,10 +3,10 @@ Part of the [The Realtime® Framework](http://www.realtime.co/solutions/realtime
 
 If your website or mobile app has data that needs to be updated in the user’s interface as it changes (e.g. real-time stock quotes or ever changing social news feed) ORTC is the reliable, easy, unbelievably fast, “works everywhere” solution.
 
-## The Appcelerator Titanium sample app (iPhone and Android)
+## The Appcelerator Titanium sample app (Mobile Web, iPhone and Android)
 This sample app uses the Realtime® Framework Pub/Sub Appcelerator Titanium modules to connect, send and receive messages through a Realtime® Server in the cloud.
 
-![ScreenShot](http://ortc.xrtml.org/screenshots/2.1.0/titanium/screen.jpg)
+![ScreenShot](http://ortc.xrtml.org/screenshots/2.1.0/titanium/screenshoot_titanium.png)
 
 > NOTE: For simplicity these samples assume you're using a Realtime® Framework developers' application key with the authentication service disabled (every connection will have permission to publish and subscribe to any channel). For security guidelines please refer to the [Security Guide](http://docs.xrtml.org/pubsub/overview/2-1-0/security.htm). 
 > 
