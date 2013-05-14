@@ -14,9 +14,9 @@ import ibt.ortc.api.ChannelPermissions;
 import ibt.ortc.api.Ortc;
 import ibt.ortc.api.Presence;
 import ibt.ortc.api.Strings;
-import ibt.ortc.api.onDisablePresence;
-import ibt.ortc.api.onEnablePresence;
-import ibt.ortc.api.onPresence;
+import ibt.ortc.api.OnDisablePresence;
+import ibt.ortc.api.OnEnablePresence;
+import ibt.ortc.api.OnPresence;
 import ibt.ortc.extensibility.OnConnected;
 import ibt.ortc.extensibility.OnDisconnected;
 import ibt.ortc.extensibility.OnException;
@@ -194,7 +194,7 @@ public class IntegrationTest {
 	}
 	
 	private static void getPresence(String channel){
-		Ortc.presence(serverUrl, isBalancer, applicationKey, authenticationToken, channel, new onPresence() {
+		Ortc.presence(serverUrl, isBalancer, applicationKey, authenticationToken, channel, new OnPresence() {
 			
 			@Override
 			public void run(Exception error, Presence presence) {
@@ -215,7 +215,7 @@ public class IntegrationTest {
 	}
 	
 	private static void enablePresence(String channel,Boolean metadata){
-		Ortc.enablePresence(serverUrl, isBalancer, applicationKey, defaultPrivateKey, channel, metadata, new onEnablePresence() {
+		Ortc.enablePresence(serverUrl, isBalancer, applicationKey, defaultPrivateKey, channel, metadata, new OnEnablePresence() {
 			
 			@Override
 			public void run(Exception error, String result) {
@@ -230,7 +230,7 @@ public class IntegrationTest {
 	}
 	
 	private static void disablePresence(String channel){
-		Ortc.disablePresence(serverUrl, isBalancer, applicationKey, defaultPrivateKey, channel, new onDisablePresence() {
+		Ortc.disablePresence(serverUrl, isBalancer, applicationKey, defaultPrivateKey, channel, new OnDisablePresence() {
 			
 			@Override
 			public void run(Exception error, String result) {
@@ -246,7 +246,7 @@ public class IntegrationTest {
 	private static void subscribeChannel(OrtcClient client, String channel) {
 		client.subscribe(channel, true, new OnMessage() {
 			@Override
-			public void run(Object sender, String channel, String message) {
+			public void run(OrtcClient sender, String channel, String message) {
 				System.out.println(String.format("Message received on channel %s: '%s'", channel, message));
 				
 				if ("unsubscribe".equals(message)) {
@@ -276,7 +276,7 @@ public class IntegrationTest {
 			permissions.put("yellow:*", yellowPermissions);
 			permissions.put("test:*", testPermissions);
 
-			if (Ortc.saveAuthentication(serverUrl, isBalancer, defaultAuthenticationToken, false, defaultApplicationKey, 14000, defaultPrivateKey, permissions)) {
+			if (Ortc.saveAuthentication(serverUrl, isBalancer, authenticationToken, false, applicationKey, 14000, defaultPrivateKey, permissions)) {
 				System.out.println("Authentication successful");
 			}
 			else {
@@ -300,7 +300,7 @@ public class IntegrationTest {
 
 		client.onConnected = new OnConnected() {
 			@Override
-			public void run(Object sender) {
+			public void run(OrtcClient sender) {
 				System.out.println(String.format("Connected to %s", client.getUrl()));
 				System.out.println(String.format("Session ID: %s\n", ((OrtcClient) sender).getSessionId()));
 
@@ -311,15 +311,15 @@ public class IntegrationTest {
 
 		client.onException = new OnException() {
 			@Override
-			public void run(Object send, Exception ex) {
+			public void run(OrtcClient send, Exception ex) {
 				System.out.println(String.format("Error: '%s'", ex.toString()));
-				//readMenuCommand(client);
+				readMenuCommand(client);
 			}
 		};
 
 		client.onDisconnected = new OnDisconnected() {
 			@Override
-			public void run(Object sender) {
+			public void run(OrtcClient sender) {
 				System.out.println("Disconnected");
 				readMenuCommand(client);
 			}
@@ -327,21 +327,21 @@ public class IntegrationTest {
 
 		client.onReconnected = new OnReconnected() {
 			@Override
-			public void run(Object sender) {
+			public void run(OrtcClient sender) {
 				System.out.println(String.format("Reconnected to %s", client.getUrl()));
 			}
 		};
 
 		client.onReconnecting = new OnReconnecting() {
 			@Override
-			public void run(Object sender) {
+			public void run(OrtcClient sender) {
 				System.out.println(String.format("Reconnecting to %s", client.getUrl()));
 			}
 		};
 
 		client.onSubscribed = new OnSubscribed() {
 			@Override
-			public void run(Object sender, String channel) {
+			public void run(OrtcClient sender, String channel) {
 				System.out.println(String.format("Subscribed to channel %s (Receive the message 'unsubscribe' to stop receiving and enter commands)", channel));
 				
 			}
@@ -349,7 +349,7 @@ public class IntegrationTest {
 
 		client.onUnsubscribed = new OnUnsubscribed() {
 			@Override
-			public void run(Object sender, String channel) {
+			public void run(OrtcClient sender, String channel) {
 				System.out.println(String.format("Unsubscribed from channel %s", channel));
 				readMenuCommand(client);
 			}

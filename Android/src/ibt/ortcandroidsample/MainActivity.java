@@ -3,9 +3,9 @@ package ibt.ortcandroidsample;
 import ibt.ortc.api.ChannelPermissions;
 import ibt.ortc.api.Ortc;
 import ibt.ortc.api.Presence;
-import ibt.ortc.api.onDisablePresence;
-import ibt.ortc.api.onEnablePresence;
-import ibt.ortc.api.onPresence;
+import ibt.ortc.api.OnDisablePresence;
+import ibt.ortc.api.OnEnablePresence;
+import ibt.ortc.api.OnPresence;
 import ibt.ortc.extensibility.OnConnected;
 import ibt.ortc.extensibility.OnDisconnected;
 import ibt.ortc.extensibility.OnException;
@@ -16,6 +16,7 @@ import ibt.ortc.extensibility.OnSubscribed;
 import ibt.ortc.extensibility.OnUnsubscribed;
 import ibt.ortc.extensibility.OrtcClient;
 import ibt.ortc.extensibility.OrtcFactory;
+import ibt.ortc.extensibility.exception.OrtcNotConnectedException;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -72,7 +73,7 @@ public class MainActivity extends Activity {
 			try {
 				client.onConnected = new OnConnected() {
 
-					public void run(final Object sender) {
+					public void run(final OrtcClient sender) {
 						runOnUiThread(new Runnable() {
 
 							public void run() {
@@ -84,7 +85,7 @@ public class MainActivity extends Activity {
 
 				client.onDisconnected = new OnDisconnected() {
 
-					public void run(Object arg0) {
+					public void run(OrtcClient arg0) {
 						runOnUiThread(new Runnable() {
 
 							public void run() {
@@ -96,7 +97,7 @@ public class MainActivity extends Activity {
 
 				client.onSubscribed = new OnSubscribed() {
 
-					public void run(Object sender, String channel) {
+					public void run(OrtcClient sender, String channel) {
 						final String subscribedChannel = channel;
 						runOnUiThread(new Runnable() {
 
@@ -109,7 +110,7 @@ public class MainActivity extends Activity {
 
 				client.onUnsubscribed = new OnUnsubscribed() {
 
-					public void run(Object sender, String channel) {
+					public void run(OrtcClient sender, String channel) {
 						final String subscribedChannel = channel;
 						runOnUiThread(new Runnable() {
 
@@ -122,7 +123,7 @@ public class MainActivity extends Activity {
 
 				client.onException = new OnException() {
 
-					public void run(Object send, Exception ex) {
+					public void run(OrtcClient send, Exception ex) {
 						final Exception exception = ex;
 						runOnUiThread(new Runnable() {
 
@@ -135,7 +136,7 @@ public class MainActivity extends Activity {
 
 				client.onReconnected = new OnReconnected() {
 
-					public void run(final Object sender) {
+					public void run(final OrtcClient sender) {
 						runOnUiThread(new Runnable() {
 
 							public void run() {
@@ -149,7 +150,7 @@ public class MainActivity extends Activity {
 
 				client.onReconnecting = new OnReconnecting() {
 
-					public void run(Object sender) {
+					public void run(OrtcClient sender) {
 						runOnUiThread(new Runnable() {
 
 							public void run() {
@@ -179,7 +180,7 @@ public class MainActivity extends Activity {
 
 		client.subscribe(editTextChannel.getText().toString(), true,
 				new OnMessage() {
-					public void run(Object sender, String channel,
+					public void run(OrtcClient sender, String channel,
 							String message) {
 						final String subscribedChannel = channel;
 						final String messageReceived = message;
@@ -268,33 +269,65 @@ public class MainActivity extends Activity {
 		EditText editTextChannel = (EditText) findViewById(R.id.EditTextChannel);
 		CheckBox checkBoxIsCluster = (CheckBox) findViewById(R.id.CheckBoxIsCluster);		
 		
-		Ortc.presence(
-				editTextServer.getText().toString(),
-				checkBoxIsCluster.isChecked(), 
-				editTextApplicationKey.getText().toString(), 
-				editTextAuthenticationToken.getText().toString(), editTextChannel.getText().toString(), new onPresence() {
-					@Override
-					public void run(Exception error, Presence presence) {
-						final Exception exception = error;
-						final Presence presenceData = presence;
-						runOnUiThread(new Runnable() {
+		if(client != null && client.getIsConnected()){
+			try {
+				client.presence(
+						editTextChannel.getText().toString(), new OnPresence() {
 							@Override
-							public void run() {
-								if(exception != null){
-									log(String.format("Error: %s", exception.getMessage()));
-								}else{
-									Iterator<?> metadataIterator = presenceData.getMetadata().entrySet().iterator();
-									while(metadataIterator.hasNext()){
-										@SuppressWarnings("unchecked")
-										Map.Entry<String, Long> entry = (Map.Entry<String, Long>) metadataIterator.next();
-										log(entry.getKey() + " - " + entry.getValue());
+							public void run(Exception error, Presence presence) {
+								final Exception exception = error;
+								final Presence presenceData = presence;
+								runOnUiThread(new Runnable() {
+									@Override
+									public void run() {
+										if(exception != null){
+											log(String.format("Error: %s", exception.getMessage()));
+										}else{
+											Iterator<?> metadataIterator = presenceData.getMetadata().entrySet().iterator();
+											while(metadataIterator.hasNext()){
+												@SuppressWarnings("unchecked")
+												Map.Entry<String, Long> entry = (Map.Entry<String, Long>) metadataIterator.next();
+												log(entry.getKey() + " - " + entry.getValue());
+											}
+											log("Subscriptions - " + presenceData.getSubscriptions());
+										}			
 									}
-									log("Subscriptions - " + presenceData.getSubscriptions());
-								}			
+								});
 							}
 						});
-					}
-				});
+			} catch (OrtcNotConnectedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			Ortc.presence(
+					editTextServer.getText().toString(),
+					checkBoxIsCluster.isChecked(), 
+					editTextApplicationKey.getText().toString(), 
+					editTextAuthenticationToken.getText().toString(), editTextChannel.getText().toString(), new OnPresence() {
+						@Override
+						public void run(Exception error, Presence presence) {
+							final Exception exception = error;
+							final Presence presenceData = presence;
+							runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									if(exception != null){
+										log(String.format("Error: %s", exception.getMessage()));
+									}else{
+										Iterator<?> metadataIterator = presenceData.getMetadata().entrySet().iterator();
+										while(metadataIterator.hasNext()){
+											@SuppressWarnings("unchecked")
+											Map.Entry<String, Long> entry = (Map.Entry<String, Long>) metadataIterator.next();
+											log(entry.getKey() + " - " + entry.getValue());
+										}
+										log("Subscriptions - " + presenceData.getSubscriptions());
+									}			
+								}
+							});
+						}
+					});
+		}
 	}
 	
 	public void enablePresenceClickEventHandler(View v) {
@@ -310,7 +343,7 @@ public class MainActivity extends Activity {
 				defaultPrivateKey, 
 				editTextChannel.getText().toString(), 
 				true, 
-				new onEnablePresence() {
+				new OnEnablePresence() {
 					@Override
 					public void run(Exception error, String result) {
 						final Exception exception = error;
@@ -341,7 +374,7 @@ public class MainActivity extends Activity {
 				editTextApplicationKey.getText().toString(), 
 				defaultPrivateKey, 
 				editTextChannel.getText().toString(), 
-				new onDisablePresence() {
+				new OnDisablePresence() {
 					@Override
 					public void run(Exception error, String result) {
 						final Exception exception = error;
