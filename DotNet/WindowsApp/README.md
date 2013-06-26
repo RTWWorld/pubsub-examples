@@ -3,10 +3,8 @@ Part of the [The Realtime® Framework](http://www.realtime.co/solutions/realtime
 
 If your website or mobile app has data that needs to be updated in the user’s interface as it changes (e.g. real-time stock quotes or ever changing social news feed) ORTC is the reliable, easy, unbelievably fast, “works everywhere” solution.
 
-## The .NET sample apps
-These sample apps use the Realtime® Framework Pub/Sub .NET library to connect, send and receive messages through a Realtime® Server in the cloud.
-
-Two versions are supplied: A Windows Application and a Website Application.
+## The .NET Windows Application sample
+This sample app (a Windows application) uses the Realtime® Framework Pub/Sub .NET library to connect, send and receive messages through a Realtime® Server in the cloud.
 
 ![ScreenShot](http://ortc.xrtml.org/screenshots/2.1.0/DotNet/Screen.jpg)
 
