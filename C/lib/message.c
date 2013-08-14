@@ -18,10 +18,12 @@
 
 void _ortc_fire_onMessage(ortc_context *context, char *channel, char *message){
   ortc_dnode* t = _ortc_dlist_search(context->channels, channel);
+  char *messageR = _ortc_replace(message, "\\\\\"", "\"");
   if(t != NULL){
     if(t->callback != NULL)
-      t->callback(context, channel, message);
+      t->callback(context, channel, messageR);
   }
+  free(messageR);
 }
 
 void _ortc_check_if_got_all_parts(ortc_context *context, char* messageId, int iMessageTotal){

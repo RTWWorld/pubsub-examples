@@ -106,10 +106,15 @@ static struct libwebsocket_protocols ortc_protocols[] = {
 void *_ortc_connection_loop(void *ptr){
   ortc_context *context;
   context = (ortc_context *) ptr;
+  int c = 0;
   while(context->connection_loop_active){
     libwebsocket_service(context->lws_context, 10);
-    if(context->lws_context && context->wsi)
+    if(c == 50){
+      c = 0;
+      if(context->lws_context && context->wsi)
 	libwebsocket_callback_on_writable(context->lws_context, context->wsi);
+    }
+    c++;
   }
   pthread_detach(pthread_self());
   return 0;
@@ -345,15 +350,19 @@ void _ortc_send(ortc_context* context, char* channel, char* message){
     memcpy(messagePart, message + i * ORTC_MAX_MESSAGE_SIZE, messageSize);
     messagePart[messageSize] = '\0';
 
-    len = 15 + strlen(context->appKey) + strlen(context->authToken) + strlen(channel) + strlen(hash) + strlen(messageId) + strlen(sParts) + strlen(sMessageCount) + messageSize;
+    char *messageR = _ortc_replace(messagePart, "\"", "\\\"");
+    //len = 15 + strlen(context->appKey) + strlen(context->authToken) + strlen(channel) + strlen(hash) + strlen(messageId) + strlen(sParts) + strlen(sMessageCount) + messageSize;
+    len = 15 + strlen(context->appKey) + strlen(context->authToken) + strlen(channel) + strlen(hash) + strlen(messageId) + strlen(sParts) + strlen(sMessageCount) + strlen(messageR); 
     m = (char*)malloc(len + 1);
     if(m == NULL){
       _ortc_exception(context, "malloc() failed in ortc send!");
       free(messagePart);
+      free(messageR);
       return;
     }
-    snprintf(m, len, "\"send;%s;%s;%s;%s;%s_%d-%d_%s\"", context->appKey, context->authToken, channel, hash, messageId, messageCount, parts, messagePart);
+    snprintf(m, len, "\"send;%s;%s;%s;%s;%s_%d-%d_%s\"", context->appKey, context->authToken, channel, hash, messageId, messageCount, parts, messageR);
     free(messagePart);
+    free(messageR);
     _ortc_send_message(context, m);
   }
 }

@@ -55,7 +55,11 @@ int main(void){
   ortc_connect(context, ORTC_APP_KEY, ORTC_AUTH_TOKEN);
 
   while(isWaiting)
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+    Sleep(1000);
+#else
     sleep(1);
+#endif
 
   ortc_free_context(context);
 }
