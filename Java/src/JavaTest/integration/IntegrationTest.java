@@ -35,7 +35,7 @@ public class IntegrationTest {
 	private static final String defaultApplicationKey = "YOUR_APPLICATION_KEY";
 	private static final String defaultPrivateKey = "YOUR_APPLICATION_PRIVATE_KEY";
 	private static final String defaultAuthenticationToken = "RealtimeDemo";
-	private static final boolean defaultNeedsAuthentication = true;
+	private static final boolean defaultNeedsAuthentication = false;
 	private static String serverUrl;
 	private static boolean isBalancer;
 	private static String applicationKey;
@@ -302,7 +302,6 @@ public class IntegrationTest {
 			@Override
 			public void run(OrtcClient sender) {
 				System.out.println(String.format("Connected to %s", client.getUrl()));
-				System.out.println(String.format("Session ID: %s\n", ((OrtcClient) sender).getSessionId()));
 
 				interfaceMenu();
 				readMenuCommand(client);
