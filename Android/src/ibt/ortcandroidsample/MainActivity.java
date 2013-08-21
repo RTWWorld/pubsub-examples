@@ -33,7 +33,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-	private static final String defaultPrivateKey = "6aDAL2e7Omb0";//"YOUR_APPLICATION_PRIVATE_KEY";
+	private static final String defaultPrivateKey = "YOUR_APPLICATION_PRIVATE_KEY";
 	private static final boolean defaultNeedsAuthentication = true;
 
 	private OrtcClient client;	
