@@ -104,9 +104,9 @@ static struct libwebsocket_protocols ortc_protocols[] = {
 };
 
 void *_ortc_connection_loop(void *ptr){
+  int c = 0;
   ortc_context *context;
   context = (ortc_context *) ptr;
-  int c = 0;
   while(context->connection_loop_active){
     libwebsocket_service(context->lws_context, 10);
     if(c == 50){
@@ -200,6 +200,8 @@ void *_ortc_heartbeat_loop(void *ptr){
       return 0;
     }
   }
+  context->heartbeat_loop_active = 0;
+  pthread_detach(pthread_self());
   return 0;
 }
 
@@ -334,6 +336,7 @@ void _ortc_send(ortc_context* context, char* channel, char* message){
 
   for(i=0; i<parts; i++){
     int messageSize;
+    char *messageR1, *messageR2;
     messageSize = strlen(message) - i * ORTC_MAX_MESSAGE_SIZE;
     if(messageSize > ORTC_MAX_MESSAGE_SIZE)
       messageSize = ORTC_MAX_MESSAGE_SIZE;
@@ -350,19 +353,24 @@ void _ortc_send(ortc_context* context, char* channel, char* message){
     memcpy(messagePart, message + i * ORTC_MAX_MESSAGE_SIZE, messageSize);
     messagePart[messageSize] = '\0';
 
-    char *messageR = _ortc_replace(messagePart, "\"", "\\\"");
+    messageR1 = _ortc_replace(messagePart, "\"", "\\\"");
+    messageR2 = _ortc_replace(messageR1, "\n", "\\n");
+    //messageR = messageR1;
+    //printf("messR: %s\n", messageR1);
     //len = 15 + strlen(context->appKey) + strlen(context->authToken) + strlen(channel) + strlen(hash) + strlen(messageId) + strlen(sParts) + strlen(sMessageCount) + messageSize;
-    len = 15 + strlen(context->appKey) + strlen(context->authToken) + strlen(channel) + strlen(hash) + strlen(messageId) + strlen(sParts) + strlen(sMessageCount) + strlen(messageR); 
+    len = 15 + strlen(context->appKey) + strlen(context->authToken) + strlen(channel) + strlen(hash) + strlen(messageId) + strlen(sParts) + strlen(sMessageCount) + strlen(messageR2); 
     m = (char*)malloc(len + 1);
     if(m == NULL){
       _ortc_exception(context, "malloc() failed in ortc send!");
       free(messagePart);
-      free(messageR);
+      free(messageR1);
+      free(messageR2);
       return;
     }
-    snprintf(m, len, "\"send;%s;%s;%s;%s;%s_%d-%d_%s\"", context->appKey, context->authToken, channel, hash, messageId, messageCount, parts, messageR);
+    snprintf(m, len, "\"send;%s;%s;%s;%s;%s_%d-%d_%s\"", context->appKey, context->authToken, channel, hash, messageId, messageCount, parts, messageR2);
     free(messagePart);
-    free(messageR);
+    free(messageR1);
+    free(messageR2);
     _ortc_send_message(context, m);
   }
 }

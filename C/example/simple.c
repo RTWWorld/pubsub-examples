@@ -6,8 +6,8 @@
 #endif
 
 #define ORTC_CLUSTER "http://ortc-developers.realtime.co/server/2.1"
-#define ORTC_APP_KEY "your_application_key"
-#define ORTC_AUTH_TOKEN "your_authentication_token"
+#define ORTC_APP_KEY "u0jw13"
+#define ORTC_AUTH_TOKEN "anonymous"
 
 int isWaiting;
 

@@ -8,9 +8,9 @@
 #endif
 
 #define ORTC_CLUSTER "http://ortc-developers.realtime.co/server/2.1"
-#define ORTC_APP_KEY "your_application_key"
-#define ORTC_AUTH_TOKEN "your_authentication_token"
-#define ORTC_PRV_KEY "your_private_key"
+#define ORTC_APP_KEY "u0jw13"
+#define ORTC_AUTH_TOKEN "dupa"
+#define ORTC_PRV_KEY "6aDAL2e7Omb0"
 #define DEFAULT_CHANNEL "yellow"
 
 
@@ -39,7 +39,7 @@ void onSubscribed(ortc_context *context, char* channel){
 }
 
 void onUnsubscribed(ortc_context *context, char* channel){
-  printf("::Unsubscribed from: %s\n", channel);
+  printf("::Unubscribed from: %s\n", channel);
 }
 
 void onMessage(ortc_context *context, char* channel, char* message){
