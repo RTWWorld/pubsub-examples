@@ -5,6 +5,6 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry kind="lib" path="ortclib/ApiJavaAndroid.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/shared/Java/svn/ibt.ortc/ortc-android-2.1.12.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
